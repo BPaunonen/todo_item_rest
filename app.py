@@ -1,5 +1,5 @@
 from flask import Flask, request
-
+from database import get_all_todos, get_single_todo, create_todo
 
 app = Flask(__name__)
 
@@ -12,22 +12,22 @@ def health_check():
 
 @app.get("/todos")
 def list_todos():
-    return todo_list
+    return get_all_todos()
 
 @app.get("/todos/<int:id>")
 def list_todo(id):
-    for todoitem in todo_list:
-        if todoitem["id"] == id:
-            return todoitem
-    return {"status": "not found"},404
+    single_todo = get_single_todo(id)
+    if single_todo is None:
+        return {"status": "not found"},404
+    return single_todo
 
 @app.post("/todos")
 def add_todo():
-    todo_item = request.json
-    new_id = todo_list[-1]["id"]+1 
-    todo_item["id"] = new_id
-    todo_list.append(todo_item)
-    return todo_item
+    input_item = request.json
+    todo_id = create_todo(input_item["content"])
+    single_todo = get_single_todo(todo_id)
+    return single_todo
+
 
 @app.put("/todos/<int:id>")
 def update_todo(id):

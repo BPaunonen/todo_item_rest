@@ -1,5 +1,19 @@
 # REST API Demo
 
+## Local dev setup
+
+```sh
+source REST/bin/activate
+```
+
+Start in debug mode with:
+
+```sh
+flask --app app --debug run
+```
+
+## Available Routes
+
 `GET /todos` - list all TODO items
 
 `GET /todos/1` - get TODO item with id 1
