@@ -1,5 +1,5 @@
 from flask import Flask, request
-from database import get_all_todos, get_single_todo, create_todo
+from database import get_all_todos, get_single_todo, create_todo, delete_todo, update_todo
 
 app = Flask(__name__)
 
@@ -29,20 +29,41 @@ def add_todo():
     return single_todo
 
 
+# @app.put("/todos/<int:id>")
+# def update_todo(id):
+#     updated_item = request.json
+#     for todoitem in todo_list:
+#         if todoitem["id"] == id:
+#             content = updated_item["content"]
+#             todoitem["content"] = content
+#             return todoitem
+#     return {"status": "not found"},404
+
 @app.put("/todos/<int:id>")
-def update_todo(id):
-    updated_item = request.json
-    for todoitem in todo_list:
-        if todoitem["id"] == id:
-            content = updated_item["content"]
-            todoitem["content"] = content
-            return todoitem
-    return {"status": "not found"},404
+def update_todo_controller(id):
+    input_data = request.json
+    items_updated = update_todo(input_data['content'], id)
+    if items_updated >= 1:
+        single_todo = get_single_todo(id)
+        return single_todo
+    else: 
+        return {"status": "not found"},404
+
+# @app.delete("/todos/<int:id>")
+# def delete_todo(id):
+#     for todoitem in todo_list:
+#         if todoitem["id"] == id:
+#             todo_list.remove(todoitem)
+#             return todoitem
+#     return {"status": "not found"},404
 
 @app.delete("/todos/<int:id>")
-def delete_todo(id):
-    for todoitem in todo_list:
-        if todoitem["id"] == id:
-            todo_list.remove(todoitem)
-            return todoitem
-    return {"status": "not found"},404
+def delete_a_todo(id):
+    rowcount = delete_todo(id)
+    print(rowcount)
+    
+    if rowcount >= 1:
+        return "", 204
+    else: 
+        return {"status": "not found"},404
+    

@@ -28,4 +28,15 @@ def create_todo(content):
         conn.commit()
         return cursor.lastrowid
 
+def update_todo(content, id):
+    with conn:
+        cursor.execute("UPDATE Todos SET Content = :content WHERE id = :id" ,
+                    {'content': content, 'id':id} )
+        conn.commit()
+        return cursor.rowcount
 
+def delete_todo(id):
+    with conn:
+        cursor.execute("DELETE FROM Todos WHERE id = ?", [id])
+        conn.commit()
+        return cursor.rowcount
